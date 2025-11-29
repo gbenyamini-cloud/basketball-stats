@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>סטטיסטיקת משחק – הבן שלי 🏀</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#020617">
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #e5e7eb;
+    }
+    .app {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    h1, h2, h3 {
+      margin: 0 0 8px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      border: 1px solid rgba(148,163,184,0.3);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    label {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: #e5e7eb;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 40px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .row > .col {
+      flex: 1;
+      min-width: 120px;
+    }
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #22c55e;
+      color: #020617;
+      font-weight: 600;
+      transition: transform 0.05s ease, box-shadow 0.1s ease, background 0.1s ease;
+    }
+    .btn:hover {
+      background: #4ade80;
+      box-shadow: 0 4px 10px rgba(34,197,94,0.5);
+    }
+    .btn:active {
+      transform: scale(0.97);
+      box-shadow: none;
+    }
+    .btn-secondary {
+      background: #0ea5e9;
+      color: #020617;
+    }
+    .btn-danger {
+      background: #ef4444;
+      color: #f9fafb;
+    }
+    .btn-sm {
+      padding: 2px 8px;
+      font-size: 12px;
+      border-radius: 999px;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #e5e7eb;
+      border: 1px solid #4b5563;
+    }
+    .pill-tabs {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+    .pill-tab {
+      flex: 1;
+      text-align: center;
+      padding: 6px 0;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      font-size: 13px;
+      cursor: pointer;
+      background: #020617;
+      color: #e5e7eb;
+    }
+    .pill-tab.active {
+      background: #22c55e;
+      color: #020617;
+      border-color: #22c55e;
+      font-weight: 600;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      font-size: 14px;
+      gap: 6px;
+    }
+    .stat-label {
+      flex: 1.2;
+    }
+    .stat-value {
+      width: 70px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-buttons {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .btn-shot-minus {
+      background: #0f172a;
+      border: 1px solid #4b5563;
+      color: #e5e7eb;
+      min-width: 26px;
+      text-align: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .btn-shot-plus {
+      background: #22c55e;
+      color: #020617;
+    }
+    .score-inputs {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .score-inputs input {
+      width: 70px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(15,118,110,0.2);
+      border: 1px solid rgba(45,212,191,0.7);
+      color: #a5f3fc;
+      margin-right: 4px;
+    }
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      padding: 4px 0;
+      border-bottom: 1px dashed #1f2933;
+    }
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    .history-main {
+      display: flex;
+      flex-direction: column;
+    }
+    .history-title {
+      font-weight: 600;
+    }
+    .history-sub {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .totals-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      font-size: 13px;
+    }
+    .totals-item {
+      background: rgba(15,23,42,0.9);
+      border-radius: 10px;
+      padding: 6px 8px;
+      border: 1px solid rgba(55,65,81,0.9);
+    }
+    .totals-item strong {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 2px;
+      color: #9ca3af;
+    }
+    .totals-top-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .totals-top-row .totals-item {
+      flex: 1;
+    }
+    small {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .radio-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .result-text {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .result-win {
+      color: #4ade80;
+    }
+    .result-lose {
+      color: #f87171;
+    }
+    .summary-line {
+      margin: 2px 0;
+      font-size: 14px;
+    }
+    .quarter-result-row {
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <h1>סטטיסטיקת משחק 🏀</h1>
+
+  <!-- משחק חדש + פרטי משחק -->
+  <div class="card">
+    <div class="card-header">
+      <h2>פרטי משחק</h2>
+      <small>בחר משחק מהרשימה או צור חדש</small>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>תאריך</label>
+        <input type="date" id="gameDate">
+      </div>
+      <div class="col">
+        <label>קבוצה יריבה</label>
+        <input type="text" id="opponent" placeholder="לדוגמה: מכבי כפר סבא">
+      </div>
+      <div class="col">
+        <label>בית / חוץ</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="homeAway" value="home" checked>
+            בית
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="homeAway" value="away">
+            חוץ
+          </label>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:10px; display:flex; gap:8px; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+      <button class="btn" id="newGameBtn">התחל משחק חדש</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-ghost btn-sm" id="finishGameBtn">סיים ושמור משחק</button>
+        <button class="btn btn-ghost btn-sm" id="resetCurrentBtn">איפוס סטטיסטיקה למשחק הנוכחי</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- רבעים + תוצאה + זמנים -->
+  <div class="card" id="quarterCard" style="display:none;">
+    <div class="card-header">
+      <h2>רבעים ותוצאה</h2>
+      <span class="badge" id="currentGameInfo"></span>
+    </div>
+    <div>
+      <label>בחר רבע</label>
+      <div class="pill-tabs" id="quarterTabs"></div>
+    </div>
+    <div>
+      <label>תוצאה מצטברת בסוף הרבע</label>
+      <div class="score-inputs">
+        <span>אנחנו:</span>
+        <input type="number" min="0" id="ourScoreQuarter">
+        <span>יריבה:</span>
+        <input type="number" min="0" id="oppScoreQuarter">
+      </div>
+
+      <div style="margin-top:8px;">
+        <label>זמן כניסה ויציאה (M:SS)</label>
+        <div class="score-inputs">
+          <span>כניסה:</span>
+          <input type="text" id="entryTimeQuarter" placeholder="0:00">
+          <span>יציאה:</span>
+          <input type="text" id="exitTimeQuarter" placeholder="8:30">
+        </div>
+      </div>
+
+      <div style="margin-top:8px; font-size:14px;">
+        <strong>סה"כ נקודות במשחק (בית : חוץ):</strong>
+        <span id="totalScoreText" class="result-text"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- סטטיסטיקה מצטברת למשחק -->
+  <div class="card" id="statsCard" style="display:none;">
+    <div class="card-header">
+      <h2>סטטיסטיקה למשחק</h2>
+      <small>קליעה/החטאה מעדכנים את סה"כ המשחק</small>
+    </div>
+
+    <h3>קליעות</h3>
+    <div id="shootingStats"></div>
+
+    <h3 style="margin-top:10px;">אחר</h3>
+    <div id="otherStats"></div>
+
+    <h3 style="margin-top:10px;">תוצאה לפי רבע</h3>
+    <div id="quarterResults"></div>
+  </div>
+
+  <!-- סיכום משחק -->
+  <div class="card" id="summaryCard" style="display:none;">
+    <div class="card-header">
+      <h2>סיכום משחק</h2>
+      <button class="btn btn-secondary btn-sm" id="shareBtn">שיתוף ב-WhatsApp</button>
+    </div>
+    <div>
+      <div id="summaryGameInfo" class="summary-line"></div>
+      <div id="summaryResult" class="summary-line"></div>
+
+      <hr style="border-color:#1f2937; margin:8px 0;">
+
+      <div class="totals-top-row" id="totalsTopRow"></div>
+      <div class="totals-grid" id="totalsGrid"></div>
+    </div>
+  </div>
+
+  <!-- ממוצעים עונתיים -->
+  <div class="card">
+    <div class="card-header">
+      <h2>ממוצעים עונתיים</h2>
+      <small>מחושב על בסיס כל המשחקים עם נתונים</small>
+    </div>
+    <div id="seasonContent">
+      <div class="totals-grid" id="seasonGrid"></div>
+    </div>
+  </div>
+
+  <!-- היסטוריה -->
+  <div class="card">
+    <div class="card-header">
+      <h2>היסטוריית משחקים</h2>
+      <small>נשמר מקומית במכשיר</small>
+    </div>
+    <div id="historyList"></div>
+    <div style="margin-top:8px; display:flex; justify-content:space-between;">
+      <small>לחיצה על משחק תטען אותו לעריכה / צפייה.</small>
+      <button class="btn btn-danger btn-sm" id="clearHistoryBtn">נקה כל ההיסטוריה</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // רישום Service Worker (לא חובה לתפקוד, רק ל-PWA)
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("sw.js")
+        .catch(err => console.log("SW registration failed", err));
+    });
+  }
+
+  const EMPTY_STATS = () => ({
+    ftAtt: 0, ftMade: 0,
+    twoAtt: 0, twoMade: 0,
+    threeAtt: 0, threeMade: 0,
+    fouls: 0,
+    offReb: 0,
+    defReb: 0,
+    steals: 0,
+    turnovers: 0,
+    assists: 0
+  });
+
+  let games = loadGames();
+  let currentGame = null;
+  let currentQuarter = 0;
+
+  const el = (id) => document.getElementById(id);
+
+  function loadGames() {
+    try {
+      const raw = localStorage.getItem("basket_games_v3");
+      if (raw) return JSON.parse(raw);
+      const v2 = localStorage.getItem("basket_games_v2");
+      if (v2) return JSON.parse(v2);
+      const v1 = localStorage.getItem("basket_games_v1");
+      return v1 ? JSON.parse(v1) : [];
+    } catch (e) {
+      console.error("loadGames error", e);
+      return [];
+    }
+  }
+
+  function saveGames() {
+    localStorage.setItem("basket_games_v3", JSON.stringify(games));
+  }
+
+  function getHomeAwayValue() {
+    const checked = document.querySelector('input[name="homeAway"]:checked');
+    return checked ? checked.value : "home";
+  }
+
+  function formatDateHuman(dateStr) {
+    if (!dateStr) return "";
+    const parts = dateStr.split("-");
+    if (parts.length === 3) {
+      const [y,m,d] = parts;
+      return `${d}.${m}.${y}`;
+    }
+    return dateStr;
+  }
+
+  function ensureTimeArrays(game) {
+    if (!game.minutesPlayed) game.minutesPlayed = [0,0,0,0,0];
+    if (!game.entryTimes) game.entryTimes = ["0:00","0:00","0:00","0:00","0:00"];
+    if (!game.exitTimes) game.exitTimes = ["0:00","0:00","0:00","0:00","0:00"];
+    if (game.minutesPlayed.length < 5) {
+      while (game.minutesPlayed.length < 5) game.minutesPlayed.push(0);
+    }
+    if (game.entryTimes.length < 5) {
+      while (game.entryTimes.length < 5) game.entryTimes.push("0:00");
+    }
+    if (game.exitTimes.length < 5) {
+      while (game.exitTimes.length < 5) game.exitTimes.push("0:00");
+    }
+  }
+
+  function ensureScoreArrays(game) {
+    if (!game.scoresOur) game.scoresOur = [0,0,0,0,0];
+    if (!game.scoresOpp) game.scoresOpp = [0,0,0,0,0];
+    if (game.scoresOur.length < 5) {
+      while (game.scoresOur.length < 5) game.scoresOur.push(0);
+    }
+    if (game.scoresOpp.length < 5) {
+      while (game.scoresOpp.length < 5) game.scoresOpp.push(0);
+    }
+  }
+
+  function parseTimeToMinutes(str) {
+    if (!str) return 0;
+    str = String(str).trim();
+    if (!str) return 0;
+    const parts = str.split(":");
+    if (parts.length === 1) {
+      const m = parseFloat(parts[0]);
+      return isNaN(m) ? 0 : m;
+    }
+    let m = parseInt(parts[0],10);
+    let s = parseInt(parts[1],10);
+    if (isNaN(m)) m = 0;
+    if (isNaN(s)) s = 0;
+    s = Math.max(0, Math.min(59, s));
+    return m + s/60;
+  }
+
+  function getGameTotals(game) {
+    ensureScoreArrays(game);
+    const ourArr = game.scoresOur;
+    const oppArr = game.scoresOpp;
+    let last = -1;
+    for (let i=0; i<ourArr.length; i++) {
+      if ((ourArr[i] || 0) > 0 || (oppArr[i] || 0) > 0) last = i;
+    }
+    if (last === -1) return { our: 0, opp: 0 };
+    return { our: ourArr[last] || 0, opp: oppArr[last] || 0 };
+  }
+
+  function shouldShowOvertime(game) {
+    ensureScoreArrays(game);
+    const q4Our = game.scoresOur[3] || 0;
+    const q4Opp = game.scoresOpp[3] || 0;
+    const hasQ4Data = q4Our > 0 || q4Opp > 0;
+    const hasOTData = (game.scoresOur[4] || 0) > 0 || (game.scoresOpp[4] || 0) > 0;
+    return hasOTData || (hasQ4Data && q4Our === q4Opp);
+  }
+
+  // --- התחלת משחק חדש ---
+  function newGame() {
+    const date = el("gameDate").value || new Date().toISOString().slice(0,10);
+    const opponent = el("opponent").value || "יריבה לא צוין";
+    const homeAway = getHomeAwayValue();
+
+    if (currentGame && !confirm("יש משחק פתוח כרגע. להתחיל משחק חדש?")) {
+      return;
+    }
+
+    const game = {
+      id: Date.now(),
+      date,
+      opponent,
+      homeAway,
+      scoresOur: [0,0,0,0,0],
+      scoresOpp: [0,0,0,0,0],
+      minutesPlayed: [0,0,0,0,0],
+      entryTimes: ["0:00","0:00","0:00","0:00","0:00"],
+      exitTimes: ["0:00","0:00","0:00","0:00","0:00"],
+      stats: EMPTY_STATS()
+    };
+    games.push(game);
+    currentGame = game;
+    currentQuarter = 0;
+    saveGames();
+    renderAll();
+  }
+
+  // --- סיום ושמירת משחק ---
+  function finishCurrentGame() {
+    if (!currentGame) return;
+    currentGame.date = el("gameDate").value || currentGame.date;
+    currentGame.opponent = el("opponent").value || currentGame.opponent;
+    currentGame.homeAway = getHomeAwayValue();
+    saveGames();
+    currentGame = null;
+    renderAll();
+  }
+
+  function loadGame(id) {
+    const game = games.find(g => g.id === id);
+    if (!game) return;
+    currentGame = game;
+
+    ensureScoreArrays(currentGame);
+    ensureTimeArrays(currentGame);
+    if (!currentGame.stats) currentGame.stats = EMPTY_STATS();
+    else if (typeof currentGame.stats.assists !== "number") {
+      currentGame.stats.assists = 0;
+    }
+
+    currentQuarter = 0;
+    el("gameDate").value = currentGame.date || "";
+    el("opponent").value = currentGame.opponent || "";
+
+    const radios = document.querySelectorAll('input[name="homeAway"]');
+    radios.forEach(r => r.checked = (r.value === currentGame.homeAway));
+
+    renderAll();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function resetCurrentGameStats() {
+    if (!currentGame) return;
+    if (!confirm("לאפס את כל הסטטיסטיקה ולנקות פרטי משחק?")) return;
+
+    currentGame.scoresOur = [0,0,0,0,0];
+    currentGame.scoresOpp = [0,0,0,0,0];
+    currentGame.minutesPlayed = [0,0,0,0,0];
+    currentGame.entryTimes = ["0:00","0:00","0:00","0:00","0:00"];
+    currentGame.exitTimes = ["0:00","0:00","0:00","0:00","0:00"];
+    currentGame.stats = EMPTY_STATS();
+    currentGame.date = "";
+    currentGame.opponent = "";
+    currentGame.homeAway = "home";
+
+    el("gameDate").value = "";
+    el("opponent").value = "";
+    const radios = document.querySelectorAll('input[name="homeAway"]');
+    radios.forEach(r => r.checked = (r.value === "home"));
+
+    saveGames();
+    renderAll();
+  }
+
+  function clearHistory() {
+    if (!confirm("למחוק את כל ההיסטוריה (כל המשחקים)?")) return;
+    games = [];
+    currentGame = null;
+    saveGames();
+    renderAll();
+  }
+
+  function setQuarter(qIndex) {
+    currentQuarter = qIndex;
+    renderQuarterTabs();
+    renderQuarterData();
+  }
+
+  function updateQuarterScore() {
+    if (!currentGame) return;
+    ensureScoreArrays(currentGame);
+
+    let ours = Number(el("ourScoreQuarter").value || 0);
+    let opp  = Number(el("oppScoreQuarter").value || 0);
+
+    const prevIndex = currentQuarter === 0 ? 0 : currentQuarter - 1;
+    const prevOur = currentQuarter === 0 ? 0 : (currentGame.scoresOur[prevIndex] || 0);
+    const prevOpp = currentQuarter === 0 ? 0 : (currentGame.scoresOpp[prevIndex] || 0);
+
+    if (ours < prevOur) ours = prevOur;
+    if (opp  < prevOpp) opp  = prevOpp;
+
+    currentGame.scoresOur[currentQuarter] = ours;
+    currentGame.scoresOpp[currentQuarter] = opp;
+
+    el("ourScoreQuarter").value = ours || "";
+    el("oppScoreQuarter").value = opp || "";
+
+    saveGames();
+    renderTotals();
+    renderQuarterResults();
+  }
+
+  function onQuarterTimeChange() {
+    if (!currentGame) return;
+    ensureTimeArrays(currentGame);
+    const entryStr = el("entryTimeQuarter").value || "0:00";
+    const exitStr  = el("exitTimeQuarter").value  || "0:00";
+    currentGame.entryTimes[currentQuarter] = entryStr;
+    currentGame.exitTimes[currentQuarter]  = exitStr;
+
+    let startMin = parseTimeToMinutes(entryStr);
+    let endMin   = parseTimeToMinutes(exitStr);
+    let dur = endMin - startMin;
+    if (!isFinite(dur) || isNaN(dur)) dur = 0;
+    dur = Math.max(0, Math.min(10, dur));
+    currentGame.minutesPlayed[currentQuarter] = dur;
+
+    saveGames();
+    renderTotals();
+  }
+
+  function renderQuarterTabs() {
+    const container = el("quarterTabs");
+    container.innerHTML = "";
+    if (!currentGame) return;
+
+    ensureScoreArrays(currentGame);
+
+    const labels = ["רבע 1","רבע 2","רבע 3","רבע 4"];
+    labels.forEach((label, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "pill-tab" + (idx === currentQuarter ? " active" : "");
+      btn.textContent = label;
+      btn.dataset.q = idx;
+      btn.onclick = () => setQuarter(idx);
+      container.appendChild(btn);
+    });
+
+    if (shouldShowOvertime(currentGame)) {
+      const idx = 4;
+      const btn = document.createElement("button");
+      btn.className = "pill-tab" + (idx === currentQuarter ? " active" : "");
+      btn.textContent = "הארכה";
+      btn.dataset.q = idx;
+      btn.onclick = () => setQuarter(idx);
+      container.appendChild(btn);
+    }
+  }
+
+  function renderQuarterData() {
+    if (!currentGame) return;
+    ensureScoreArrays(currentGame);
+    ensureTimeArrays(currentGame);
+
+    el("ourScoreQuarter").value = currentGame.scoresOur[currentQuarter] || "";
+    el("oppScoreQuarter").value = currentGame.scoresOpp[currentQuarter] || "";
+
+    el("entryTimeQuarter").value = currentGame.entryTimes[currentQuarter] || "0:00";
+    el("exitTimeQuarter").value  = currentGame.exitTimes[currentQuarter]  || "0:00";
+
+    renderStats();
+    renderTotals();
+  }
+
+  // --- רנדר סטטיסטיקה מצטברת למשחק ---
+  function renderStats() {
+    if (!currentGame) return;
+    const stats = currentGame.stats || EMPTY_STATS();
+
+    const shootingContainer = document.getElementById("shootingStats");
+    shootingContainer.innerHTML = "";
+    const shootingDefs = [
+      { keyAtt: "ftAtt", keyMade: "ftMade", label: "עונשין" },
+      { keyAtt: "twoAtt", keyMade: "twoMade", label: "2 נקודות" },
+      { keyAtt: "threeAtt", keyMade: "threeMade", label: "3 נקודות" }
+    ];
+    shootingDefs.forEach(def => {
+      const row = document.createElement("div");
+      row.className = "stat-row";
+      row.innerHTML = `
+        <div class="stat-label">${def.label}</div>
+        <div class="stat-value">${stats[def.keyMade]} / ${stats[def.keyAtt]}</div>
+        <div class="stat-buttons">
+          <button class="btn btn-sm btn-shot-minus" data-type="shot" data-act="madeMinus" data-att="${def.keyAtt}" data-made="${def.keyMade}">-</button>
+          <button class="btn btn-sm btn-shot-plus" data-type="shot" data-act="madePlus" data-att="${def.keyAtt}" data-made="${def.keyMade}">קליעה +</button>
+          <button class="btn btn-sm btn-shot-minus" data-type="shot" data-act="missMinus" data-att="${def.keyAtt}" data-made="${def.keyMade}">-</button>
+          <button class="btn btn-sm btn-ghost" data-type="shot" data-act="missPlus" data-att="${def.keyAtt}" data-made="${def.keyMade}">החטאה +</button>
+        </div>
+      `;
+      shootingContainer.appendChild(row);
+    });
+
+    shootingContainer.querySelectorAll("button").forEach(btn => {
+      btn.onclick = () => {
+        if (!currentGame) return;
+        const act = btn.dataset.act;
+        const attKey = btn.dataset.att;
+        const madeKey = btn.dataset.made;
+        const s = currentGame.stats;
+
+        if (act === "madePlus") {
+          s[attKey] += 1;
+          s[madeKey] += 1;
+        } else if (act === "madeMinus") {
+          if (s[madeKey] > 0) {
+            s[madeKey] -= 1;
+            s[attKey] = Math.max(s[attKey] - 1, s[madeKey]);
+          }
+        } else if (act === "missPlus") {
+          s[attKey] += 1;
+        } else if (act === "missMinus") {
+          if (s[attKey] > s[madeKey]) {
+            s[attKey] -= 1;
+          }
+        }
+        saveGames();
+        renderStats();
+        renderTotals();
+      };
+    });
+
+    const otherContainer = document.getElementById("otherStats");
+    otherContainer.innerHTML = "";
+    const otherDefs = [
+      { key: "fouls", label: "עבירות" },
+      { key: "offReb", label: "ריבאונד התקפה" },
+      { key: "defReb", label: "ריבאונד הגנה" },
+      { key: "steals", label: "חטיפות" },
+      { key: "turnovers", label: "איבודים" },
+      { key: "assists", label: "אסיסטים" }
+    ];
+    otherDefs.forEach(def => {
+      const row = document.createElement("div");
+      row.className = "stat-row";
+      row.innerHTML = `
+        <div class="stat-label">${def.label}</div>
+        <div class="stat-value">${stats[def.key]}</div>
+        <div class="stat-buttons">
+          <button class="btn btn-sm btn-shot-plus" data-field="${def.key}" data-delta="1">+</button>
+          <button class="btn btn-sm btn-shot-minus" data-field="${def.key}" data-delta="-1">-</button>
+        </div>
+      `;
+      otherContainer.appendChild(row);
+    });
+
+    otherContainer.querySelectorAll("button").forEach(btn => {
+      btn.onclick = () => {
+        if (!currentGame) return;
+        const field = btn.dataset.field;
+        const delta = Number(btn.dataset.delta);
+        const s = currentGame.stats;
+        s[field] = Math.max(0, (s[field] || 0) + delta);
+        saveGames();
+        renderStats();
+        renderTotals();
+      };
+    });
+
+    renderQuarterResults();
+  }
+
+  function renderQuarterResults() {
+    const container = el("quarterResults");
+    container.innerHTML = "";
+    if (!currentGame) return;
+    ensureScoreArrays(currentGame);
+
+    const labels = ["רבע 1","רבע 2","רבע 3","רבע 4","הארכה"];
+    const our = currentGame.scoresOur;
+    const opp = currentGame.scoresOpp;
+
+    for (let i = 0; i < 4; i++) {
+      const prevOur = i === 0 ? 0 : (our[i-1] || 0);
+      const prevOpp = i === 0 ? 0 : (opp[i-1] || 0);
+      const qOur = (our[i] || 0) - prevOur;
+      const qOpp = (opp[i] || 0) - prevOpp;
+      if (qOur !== 0 || qOpp !== 0) {
+        const div = document.createElement("div");
+        div.className = "quarter-result-row";
+        div.textContent = `${labels[i]}: אנחנו ${qOur} : ${qOpp} יריבה`;
+        container.appendChild(div);
+      }
+    }
+
+    const prevOur = (our[3] || 0);
+    const prevOpp = (opp[3] || 0);
+    const otOur = (our[4] || 0) - prevOur;
+    const otOpp = (opp[4] || 0) - prevOpp;
+    if (otOur !== 0 || otOpp !== 0) {
+      const div = document.createElement("div");
+      div.className = "quarter-result-row";
+      div.textContent = `${labels[4]}: אנחנו ${otOur} : ${otOpp} יריבה`;
+      container.appendChild(div);
+    }
+  }
+
+  // --- סיכומים למשחק ---
+  function renderTotals() {
+    if (!currentGame) {
+      el("totalScoreText").textContent = "";
+      el("totalsGrid").innerHTML = "";
+      el("totalsTopRow").innerHTML = "";
+      el("summaryResult").textContent = "";
+      el("summaryGameInfo").textContent = "";
+      renderSeasonStats();
+      return;
+    }
+    ensureScoreArrays(currentGame);
+    ensureTimeArrays(currentGame);
+
+    const { our: totalOur, opp: totalOpp } = getGameTotals(currentGame);
+
+    const isWin = totalOur > totalOpp;
+    const isLoss = totalOur < totalOpp;
+    const resultWord = isWin ? "ניצחון" : isLoss ? "הפסד" : "תיקו";
+
+    let homeScore, awayScore;
+    if (currentGame.homeAway === "home") {
+      homeScore = totalOur;
+      awayScore = totalOpp;
+    } else {
+      homeScore = totalOpp;
+      awayScore = totalOur;
+    }
+
+    const cls = isWin ? "result-win" : isLoss ? "result-lose" : "";
+    el("totalScoreText").innerHTML =
+      `<span class="${cls}">${homeScore} : ${awayScore} – ${resultWord}</span>`;
+
+    const haLabel = currentGame.homeAway === "home" ? "בית" : "חוץ";
+    const humanDate = formatDateHuman(currentGame.date || "");
+    el("summaryGameInfo").textContent =
+      `תאריך: ${humanDate} | ${haLabel} מול ${currentGame.opponent || ""}`;
+
+    el("summaryResult").innerHTML =
+      `<span class="result-text ${cls}">תוצאה (בית:חוץ): ${homeScore} : ${awayScore} – ${resultWord}</span>`;
+
+    const minutesArr = currentGame.minutesPlayed || [0,0,0,0,0];
+    const totalMinutes = minutesArr.reduce((a,b)=>a + (Number(b) || 0), 0);
+
+    const s = currentGame.stats || EMPTY_STATS();
+    const ptsThisGame = s.ftMade + 2*s.twoMade + 3*s.threeMade;
+
+    const topRow = el("totalsTopRow");
+    topRow.innerHTML = "";
+    const addTopItem = (title, value) => {
+      const div = document.createElement("div");
+      div.className = "totals-item";
+      div.innerHTML = `<strong>${title}</strong><span>${value}</span>`;
+      topRow.appendChild(div);
+    };
+    addTopItem("דקות משחק", totalMinutes.toFixed(1).replace(/\.0$/, ""));
+    addTopItem("נקודות במשחק", ptsThisGame);
+
+    const totalsGrid = el("totalsGrid");
+    totalsGrid.innerHTML = "";
+    const addItem = (title, value) => {
+      const div = document.createElement("div");
+      div.className = "totals-item";
+      div.innerHTML = `<strong>${title}</strong><span>${value}</span>`;
+      totalsGrid.appendChild(div);
+    };
+
+    addItem("עונשין", `${s.ftMade} / ${s.ftAtt}`);
+    addItem("2 נקודות", `${s.twoMade} / ${s.twoAtt}`);
+    addItem("3 נקודות", `${s.threeMade} / ${s.threeAtt}`);
+
+    addItem("ריבאונד התקפה", s.offReb);
+    addItem("ריבאונד הגנה", s.defReb);
+    addItem("אסיסטים", s.assists);
+
+    addItem("חטיפות", s.steals);
+    addItem("איבודים", s.turnovers);
+    addItem("עבירות", s.fouls);
+
+    renderSeasonStats();
+    renderQuarterResults();
+    renderQuarterTabs();
+  }
+
+  // --- ממוצעים עונתיים ---
+  function renderSeasonStats() {
+    const seasonGrid = el("seasonGrid");
+    const seasonContent = el("seasonContent");
+    seasonGrid.innerHTML = "";
+
+    if (!games.length) {
+      seasonContent.innerHTML = "<small>אין עדיין משחקים לצורך חישוב ממוצעים.</small>";
+      return;
+    }
+
+    const validGames = games.filter(g => {
+      const stats = g.stats || {};
+      const minutesArr = g.minutesPlayed || [];
+      const minutes = minutesArr.reduce((a,b)=>a + (Number(b) || 0), 0);
+      const shots = (stats.ftAtt||0) + (stats.twoAtt||0) + (stats.threeAtt||0);
+      const others = (stats.offReb||0) + (stats.defReb||0) +
+                     (stats.steals||0) + (stats.turnovers||0) +
+                     (stats.assists||0) + (stats.fouls||0);
+      return minutes > 0 || shots > 0 || others > 0;
+    });
+
+    if (!validGames.length) {
+      seasonContent.innerHTML = "<small>אין עדיין נתונים עונתיים (המשחקים ריקים).</small>";
+      return;
+    }
+
+    seasonContent.innerHTML = '<div class="totals-grid" id="seasonGrid"></div>';
+    const grid = el("seasonGrid");
+
+    const gamesCount = validGames.length;
+    let sumMinutes = 0;
+    let sumPoints = 0;
+    let sumOffReb = 0, sumDefReb = 0, sumSteals = 0, sumTurnovers = 0, sumAssists = 0, sumFouls = 0;
+    let ftMade = 0, ftAtt = 0;
+    let twoMade = 0, twoAtt = 0;
+    let threeMade = 0, threeAtt = 0;
+
+    validGames.forEach(g => {
+      const s = g.stats || {};
+      const minutesArr = g.minutesPlayed || [];
+      const minutes = minutesArr.reduce((a,b)=>a + (Number(b) || 0), 0);
+      const pts = (s.ftMade||0) + 2*(s.twoMade||0) + 3*(s.threeMade||0);
+
+      sumMinutes += minutes;
+      sumPoints += pts;
+      sumOffReb += (s.offReb||0);
+      sumDefReb += (s.defReb||0);
+      sumSteals += (s.steals||0);
+      sumTurnovers += (s.turnovers||0);
+      sumAssists += (s.assists||0);
+      sumFouls += (s.fouls||0);
+
+      ftMade += (s.ftMade||0);
+      ftAtt  += (s.ftAtt||0);
+      twoMade += (s.twoMade||0);
+      twoAtt  += (s.twoAtt||0);
+      threeMade += (s.threeMade||0);
+      threeAtt  += (s.threeAtt||0);
+    });
+
+    const avgMinutes = sumMinutes / gamesCount;
+    const avgPoints  = sumPoints / gamesCount;
+    const avgOffReb  = sumOffReb / gamesCount;
+    const avgDefReb  = sumDefReb / gamesCount;
+    const avgSteals  = sumSteals / gamesCount;
+    const avgTO      = sumTurnovers / gamesCount;
+    const avgAst     = sumAssists / gamesCount;
+    const avgFouls   = sumFouls / gamesCount;
+
+    const ftPct    = ftAtt    ? Math.round(ftMade/ftAtt*100) : 0;
+    const twoPct   = twoAtt   ? Math.round(twoMade/twoAtt*100) : 0;
+    const threePct = threeAtt ? Math.round(threeMade/threeAtt*100) : 0;
+
+    const addItem = (title, value) => {
+      const div = document.createElement("div");
+      div.className = "totals-item";
+      div.innerHTML = `<strong>${title}</strong><span>${value}</span>`;
+      grid.appendChild(div);
+    };
+
+    addItem("מספר משחקים", gamesCount);
+    addItem("ממוצע דקות למשחק", avgMinutes.toFixed(1).replace(/\.0$/, ""));
+    addItem("ממוצע נקודות למשחק", avgPoints.toFixed(1).replace(/\.0$/, ""));
+
+    addItem("ריב' התקפה למשחק", avgOffReb.toFixed(1).replace(/\.0$/, ""));
+    addItem("ריב' הגנה למשחק", avgDefReb.toFixed(1).replace(/\.0$/, ""));
+    addItem("אסיסטים למשחק", avgAst.toFixed(1).replace(/\.0$/, ""));
+    addItem("חטיפות למשחק", avgSteals.toFixed(1).replace(/\.0$/, ""));
+    addItem("איבודים למשחק", avgTO.toFixed(1).replace(/\.0$/, ""));
+    addItem("עבירות למשחק", avgFouls.toFixed(1).replace(/\.0$/, ""));
+
+    addItem("אחוז עונשין עונתי", ftAtt ? `${ftPct}% (${ftMade}/${ftAtt})` : "—");
+    addItem("אחוז 2 נק' עונתי", twoAtt ? `${twoPct}% (${twoMade}/${twoAtt})` : "—");
+    addItem("אחוז 3 נק' עונתי", threeAtt ? `${threePct}% (${threeMade}/${threeAtt})` : "—");
+  }
+
+  function renderHistory() {
+    const container = el("historyList");
+    container.innerHTML = "";
+    if (!games.length) {
+      container.innerHTML = "<small>אין עדיין משחקים שמורים.</small>";
+      return;
+    }
+    games
+      .slice()
+      .sort((a,b)=> b.id - a.id)
+      .forEach(game => {
+        ensureScoreArrays(game);
+        const { our: totalOur, opp: totalOpp } = getGameTotals(game);
+
+        let homeScore, awayScore;
+        if (game.homeAway === "home") {
+          homeScore = totalOur;
+          awayScore = totalOpp;
+        } else {
+          homeScore = totalOpp;
+          awayScore = totalOur;
+        }
+
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.innerHTML = `
+          <div class="history-main">
+            <span class="history-title">${game.opponent || ""} (${game.homeAway === "home" ? "בית" : "חוץ"})</span>
+            <span class="history-sub">${game.date || ""} | תוצאה (בית:חוץ): ${homeScore} : ${awayScore}</span>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-sm btn-ghost" data-action="open">פתח</button>
+            <button class="btn btn-sm btn-danger" data-action="delete">מחק</button>
+          </div>
+        `;
+        const openBtn = div.querySelector('button[data-action="open"]');
+        const delBtn  = div.querySelector('button[data-action="delete"]');
+
+        openBtn.onclick = () => loadGame(game.id);
+        delBtn.onclick = () => {
+          if (!confirm("למחוק את המשחק הזה מההיסטוריה ומהסטטיסטיקה?")) return;
+          if (currentGame && currentGame.id === game.id) {
+            currentGame = null;
+          }
+          games = games.filter(g => g.id !== game.id);
+          saveGames();
+          renderAll();
+        };
+
+        container.appendChild(div);
+      });
+  }
+
+  function buildSummaryText(game) {
+    ensureScoreArrays(game);
+    ensureTimeArrays(game);
+    const { our: totalOur, opp: totalOpp } = getGameTotals(game);
+    const s = game.stats || EMPTY_STATS();
+    const pts = s.ftMade + s.twoMade*2 + s.threeMade*3;
+
+    let homeScore, awayScore;
+    if (game.homeAway === "home") {
+      homeScore = totalOur;
+      awayScore = totalOpp;
+    } else {
+      homeScore = totalOpp;
+      awayScore = totalOur;
+    }
+
+    const isWin = totalOur > totalOpp;
+    const isLoss = totalOur < totalOpp;
+    const resultWord = isWin ? "ניצחון" : isLoss ? "הפסד" : "תיקו";
+
+    const minutesArr = game.minutesPlayed || [0,0,0,0,0];
+    const totalMinutes = minutesArr.reduce((a,b)=>a + (Number(b) || 0), 0);
+    const haLabel = game.homeAway === "home" ? "בית" : "חוץ";
+    const humanDate = formatDateHuman(game.date || "");
+
+    let text = "";
+    text += `סטטיסטיקת משחק – ${humanDate}\n`;
+    text += `${haLabel} מול ${game.opponent || ""}\n`;
+    text += `תוצאה (בית:חוץ): ${homeScore} : ${awayScore} – ${resultWord}\n`;
+    text += `סה\"כ דקות משחק: ${totalMinutes.toFixed(1).replace(/\.0$/, "")}\n\n`;
+    text += `עונשין: ${s.ftMade} / ${s.ftAtt}\n`;
+    text += `2 נקודות: ${s.twoMade} / ${s.twoAtt}\n`;
+    text += `3 נקודות: ${s.threeMade} / ${s.threeAtt}\n`;
+    text += `סה\"כ נקודות במשחק: ${pts}\n\n`;
+    text += `ריב' התקפה: ${s.offReb}\n`;
+    text += `ריב' הגנה: ${s.defReb}\n`;
+    text += `חטיפות: ${s.steals}\n`;
+    text += `איבודים: ${s.turnovers}\n`;
+    text += `אסיסטים: ${s.assists}\n`;
+    text += `עבירות: ${s.fouls}\n`;
+    return text;
+  }
+
+  async function shareCurrentGame() {
+    if (!currentGame) return;
+    const card = document.getElementById("summaryCard");
+
+    try {
+      const canvas = await html2canvas(card, {
+        backgroundColor: "#020617",
+        scale: window.devicePixelRatio || 2
+      });
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+      if (!blob) throw new Error("toBlob failed");
+
+      const file = new File([blob], "game-summary.png", { type: "image/png" });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: "סטטיסטיקת משחק",
+          text: ""
+        });
+      } else if (navigator.share) {
+        const textFallback = buildSummaryText(currentGame);
+        await navigator.share({ text: textFallback, title: "סטטיסטיקת משחק" });
+      } else {
+        const textFallback = buildSummaryText(currentGame);
+        const url = "https://wa.me/?text=" + encodeURIComponent(textFallback);
+        window.open(url, "_blank");
+      }
+    } catch (e) {
+      console.error("share error", e);
+      const textFallback = buildSummaryText(currentGame);
+      const url = "https://wa.me/?text=" + encodeURIComponent(textFallback);
+      window.open(url, "_blank");
+    }
+  }
+
+  function renderAll() {
+    renderHistory();
+    const hasGame = !!currentGame;
+    el("quarterCard").style.display = hasGame ? "block" : "none";
+    el("statsCard").style.display = hasGame ? "block" : "none";
+    el("summaryCard").style.display = hasGame ? "block" : "none";
+
+    if (hasGame) {
+      const haLabel = currentGame.homeAway === "home" ? "בית" : "חוץ";
+      el("currentGameInfo").textContent =
+        `${currentGame.date || ""} | ${currentGame.opponent || ""} (${haLabel})`;
+      renderQuarterTabs();
+      renderQuarterData();
+    } else {
+      el("currentGameInfo").textContent = "";
+      renderSeasonStats();
+    }
+  }
+
+  // חיבור כפתורים
+  document.getElementById("newGameBtn").onclick = newGame;
+  document.getElementById("finishGameBtn").onclick = finishCurrentGame;
+  document.getElementById("resetCurrentBtn").onclick = resetCurrentGameStats;
+  document.getElementById("clearHistoryBtn").onclick = clearHistory;
+
+  document.getElementById("ourScoreQuarter").onchange = updateQuarterScore;
+  document.getElementById("oppScoreQuarter").onchange = updateQuarterScore;
+  document.getElementById("entryTimeQuarter").onchange = onQuarterTimeChange;
+  document.getElementById("exitTimeQuarter").onchange = onQuarterTimeChange;
+
+  document.getElementById("shareBtn").onclick = shareCurrentGame;
+
+  renderAll();
+</script>
+</body>
+</html>
